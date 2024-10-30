@@ -39,6 +39,7 @@ public class Main {
         testarInvestimento();
 
         System.out.println("--------------------------------------------");
+        System.out.println("sim");
 
     }
 
@@ -99,4 +100,5 @@ public class Main {
         investimento1.setTaxaRetornoInvestimento(3.000);
         investimento1.fazerInvestimento();
     }
+
 }
