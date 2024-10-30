@@ -1,7 +1,7 @@
-package br.com.fiap.fintech.dao;
+package br.com.fiap.fintech.repository;
 
 import br.com.fiap.fintech.factory.ConnectionFactory;
-import br.com.fiap.fintech.functions.Divida;
+import br.com.fiap.fintech.model.Divida;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

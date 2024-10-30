@@ -1,8 +1,7 @@
 package br.com.fiap.fintech.test;
 
-import br.com.fiap.fintech.dao.DividaDAO;
-import br.com.fiap.fintech.factory.ConnectionFactory;
-import br.com.fiap.fintech.functions.Divida;
+import br.com.fiap.fintech.repository.DividaDAO;
+import br.com.fiap.fintech.model.Divida;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,12 +13,12 @@ public class DividaDaoTest {
 
         // CREATE - Inserir uma nova dívida
         Divida novaDivida = new Divida();
-        novaDivida.setValorTotal(3000.00);
-        novaDivida.setValorPago(500.00);
+        novaDivida.setValorTotal(150.00);
+        novaDivida.setValorPago(150.00);
         novaDivida.setDataVencimento(LocalDate.now().plusDays(10));
-        novaDivida.setStatusDivida("Ativa");
-        novaDivida.setTipoDivida("Cartão de Crédito");
-        novaDivida.setDescricaoDivida("Compra parcelada no cartão");
+        novaDivida.setStatusDivida("Quitada");
+        novaDivida.setTipoDivida("Cartão de Debito");
+        novaDivida.setDescricaoDivida("Compra a vista");
 
         dividaDAO.insert(novaDivida);
         System.out.println("Nova dívida inserida com sucesso!");

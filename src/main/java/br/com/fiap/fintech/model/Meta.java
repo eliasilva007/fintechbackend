@@ -1,6 +1,4 @@
-package br.com.fiap.fintech.functions;
-
-import br.com.fiap.fintech.account.Conta;
+package br.com.fiap.fintech.model;
 
 import java.time.LocalDate;
 
@@ -65,7 +63,7 @@ public class Meta {
 
     //Método da classe
     public void metaRegistrada(){
-        //Lógica que reigstra a br.com.fiap.fintech.functions.Meta do Usuário
+        //Lógica que reigstra a br.com.fiap.fintech.model.Meta do Usuário
 
         System.out.println("Meta Registrada com Sucesso: " + descricaoMeta);
     }

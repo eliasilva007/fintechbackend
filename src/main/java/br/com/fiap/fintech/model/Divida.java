@@ -1,6 +1,4 @@
-package br.com.fiap.fintech.functions;
-
-import br.com.fiap.fintech.account.Conta;
+package br.com.fiap.fintech.model;
 
 import java.time.LocalDate;
 

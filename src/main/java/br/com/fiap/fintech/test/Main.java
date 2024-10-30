@@ -1,6 +1,6 @@
-package br.com.fiap.fintech.functions;
-import br.com.fiap.fintech.account.ContaFisica;
-import br.com.fiap.fintech.account.ContaJuridica;
+package br.com.fiap.fintech.test;
+import br.com.fiap.fintech.model.*;
+
 import java.time.LocalDate;
 
 //Apenas usamos a Classe Main para fazer o teste das outras classes...

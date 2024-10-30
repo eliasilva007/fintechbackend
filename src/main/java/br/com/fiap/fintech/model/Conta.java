@@ -1,4 +1,4 @@
-package br.com.fiap.fintech.account;
+package br.com.fiap.fintech.model;
 
 public abstract class Conta {
 
