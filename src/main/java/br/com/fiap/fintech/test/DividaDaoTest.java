@@ -1,6 +1,6 @@
 package br.com.fiap.fintech.test;
 
-import br.com.fiap.fintech.repository.DividaDAO;
+import br.com.fiap.fintech.implementsDAO.ImplementDividaDAO;
 import br.com.fiap.fintech.model.Divida;
 
 import java.time.LocalDate;
@@ -9,22 +9,22 @@ import java.util.List;
 public class DividaDaoTest {
     public static void main(String[] args) {
 
-        DividaDAO dividaDAO = new DividaDAO();
+        ImplementDividaDAO implementDividaDAO = new ImplementDividaDAO();
 
         // CREATE - Inserir uma nova dívida
         Divida novaDivida = new Divida();
-        novaDivida.setValorTotal(150.00);
-        novaDivida.setValorPago(150.00);
+        novaDivida.setValorTotal(1500.00);
+        novaDivida.setValorPago(0);
         novaDivida.setDataVencimento(LocalDate.now().plusDays(10));
-        novaDivida.setStatusDivida("Quitada");
-        novaDivida.setTipoDivida("Cartão de Debito");
-        novaDivida.setDescricaoDivida("Compra a vista");
+        novaDivida.setStatusDivida("Ativa");
+        novaDivida.setTipoDivida("pix");
+        novaDivida.setDescricaoDivida("Emprestimo com Agiota");
 
-        dividaDAO.insert(novaDivida);
+        implementDividaDAO.insert(novaDivida);
         System.out.println("Nova dívida inserida com sucesso!");
 
         // READ - Listar todas as dívidas
-        List<Divida> dividas = dividaDAO.getAll();
+        List<Divida> dividas = implementDividaDAO.getAll();
         System.out.println("Lista de dívidas:");
         for (Divida divida : dividas) {
             System.out.println("ID: " + divida.getIdDivida());
@@ -43,18 +43,18 @@ public class DividaDaoTest {
             primeiraDivida.setValorPago(1500.00); // Alterando o valor pago
             primeiraDivida.setStatusDivida("Quitada"); // Alterando o status para quitada
 
-            dividaDAO.update(primeiraDivida); // Supondo que o método `update` existe no DAO
+            implementDividaDAO.update(primeiraDivida); // Supondo que o método `update` existe no DAO
             System.out.println("Dívida atualizada com sucesso!");
 
 
             // DELETE - Remover uma dívida
             if (!dividas.isEmpty()) {
                 Divida ultimaDivida = dividas.get(dividas.size() - 1); // Pegando a última dívida da lista
-                dividaDAO.delete(ultimaDivida.getIdDivida()); // Supondo que o método `delete` existe no DAO
+                implementDividaDAO.delete(ultimaDivida.getIdDivida()); // Supondo que o método `delete` existe no DAO
                 System.out.println("Dívida removida com sucesso!");
 
                 // Verifica a remoção
-                List<Divida> dividasPosRemocao = dividaDAO.getAll();
+                List<Divida> dividasPosRemocao = implementDividaDAO.getAll();
                 boolean removida = dividasPosRemocao.stream()
                         .noneMatch(d -> d.getIdDivida() == ultimaDivida.getIdDivida());
                 if (removida) {
