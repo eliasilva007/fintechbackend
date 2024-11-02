@@ -23,7 +23,6 @@ public class DividaDaoTest {
         implementDividaDAO.insert(novaDivida);
         System.out.println("Nova dívida inserida com sucesso!");
 
-        System.out.println("..");
 
         // READ - Listar todas as dívidas
         List<Divida> dividas = implementDividaDAO.getAll();
