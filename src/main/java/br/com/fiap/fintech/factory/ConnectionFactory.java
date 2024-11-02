@@ -5,28 +5,29 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionFactory {
+    private String url;
+    private String user;
+    private String password;
 
-    private static final String URL = "jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl";
-    private static final String USUARIO = "rm558943";
-    private static final String SENHA = "100603";
-
-    // Método para criar a conexão com o banco de dados
-
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USUARIO, SENHA);
-    }
-
-    // Método para fechar a conexão com o banco de dados
-    public static void closeConnection(Connection connection) {
-        if (connection != null) {
-            try {
-                connection.close();
-                System.out.println("Conexão fechada com sucesso.");
-            } catch (SQLException e) {
-                throw new RuntimeException("Erro ao fechar a conexão: " + e.getMessage(), e);
-            }
+    public ConnectionFactory(String dbType) {
+        switch (dbType.toLowerCase()) {
+            case "mysql":
+                this.url = "jdbc:mysql://localhost:3306/db_fintech";
+                this.user = "your_mysql_user";
+                this.password = "your_mysql_password";
+                break;
+            case "oracle":
+                this.url = "jdbc:oracle:thin:@localhost:1521:db_fintech";
+                this.user = "your_oracle_user";
+                this.password = "your_oracle_password";
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo de banco de dados não suportado: " + dbType);
         }
     }
 
-
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url, user, password);
+    }
 }
+
