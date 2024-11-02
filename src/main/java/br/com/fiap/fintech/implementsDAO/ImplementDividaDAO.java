@@ -26,8 +26,8 @@ public class ImplementDividaDAO implements DividaDAO {
 
     @Override
     public void insert(Divida divida) {
-        String sql = "INSERT INTO T_Divida (id_divida, valor_total, valor_pago, data_vencimento, status, tipo, descricao) " +
-                "VALUES (RM558943.SEQ_DIVIDA.NEXTVAL, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO T_Divida (id_divida, valor_total, valor_pago, data_vencimento, status, tipo, descricao, data_criacao) " +
+                "VALUES (RM558943.SEQ_DIVIDA.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
             stmt.setDouble(1, divida.getValorTotal());
@@ -36,6 +36,7 @@ public class ImplementDividaDAO implements DividaDAO {
             stmt.setString(4, divida.getStatusDivida());
             stmt.setString(5, divida.getTipoDivida());
             stmt.setString(6, divida.getDescricaoDivida());
+            stmt.setDate(7, java.sql.Date.valueOf(divida.getDataCriacao()));
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir a dívida", e);
@@ -58,6 +59,7 @@ public class ImplementDividaDAO implements DividaDAO {
                 divida.setStatusDivida(rs.getString("status"));
                 divida.setTipoDivida(rs.getString("tipo"));
                 divida.setDescricaoDivida(rs.getString("descricao"));
+                divida.setDataVencimento(rs.getDate("data_criacao").toLocalDate());
                 dividas.add(divida);
             }
         } catch (SQLException e) {
@@ -69,7 +71,7 @@ public class ImplementDividaDAO implements DividaDAO {
 
     @Override
     public void update(Divida divida) {
-        String sql = "UPDATE T_Divida SET valor_total = ?, valor_pago = ?, data_vencimento = ?, status = ?, tipo = ?, descricao = ? WHERE id_divida = ?";
+        String sql = "UPDATE T_Divida SET valor_total = ?, valor_pago = ?, data_vencimento = ?, status = ?, tipo = ?, descricao = ?, data_criacao = ? WHERE id_divida = ?";
 
         try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
             stmt.setDouble(1, divida.getValorTotal());
@@ -78,7 +80,8 @@ public class ImplementDividaDAO implements DividaDAO {
             stmt.setString(4, divida.getStatusDivida());
             stmt.setString(5, divida.getTipoDivida());
             stmt.setString(6, divida.getDescricaoDivida());
-            stmt.setInt(7, divida.getIdDivida());
+            stmt.setDate(7, java.sql.Date.valueOf(divida.getDataCriacao()));
+            stmt.setInt(8, divida.getIdDivida());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar a dívida", e);
@@ -114,6 +117,7 @@ public class ImplementDividaDAO implements DividaDAO {
                     divida.setStatusDivida(rs.getString("status"));
                     divida.setTipoDivida(rs.getString("tipo"));
                     divida.setDescricaoDivida(rs.getString("descricao"));
+                    divida.setDataCriacao(rs.getDate("data_criacao").toLocalDate());
                 }
             }
         } catch (SQLException e) {

@@ -9,6 +9,7 @@ public class Divida {
     private double valorTotal;
     private double valorPago;
     private LocalDate dataVencimento;
+    private LocalDate dataCriacao;
     private String statusDivida;
     private String tipoDivida;
     private String descricaoDivida;
@@ -37,6 +38,14 @@ public class Divida {
 
     public void setDataVencimento(LocalDate dataVencimento) {
         this.dataVencimento = dataVencimento;
+    }
+
+    public LocalDate getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDate dataCriacao) {
+        this.dataCriacao = dataCriacao;
     }
 
     public String getStatusDivida() {
@@ -84,14 +93,27 @@ public class Divida {
     }
 
     //Construtor Personalizado
-    public Divida(double valorTotal, double valorPago, LocalDate dataVencimento, String statusDivida, String tipoDivida, String descricaoDivida, int IdDivida, Conta conta) {
+    public Divida(double valorTotal, double valorPago, LocalDate dataVencimento, LocalDate dataCriacao, String statusDivida, String tipoDivida, String descricaoDivida, int IdDivida, Conta conta) {
         this.valorTotal = valorTotal;
         this.valorPago = valorPago;
         this.dataVencimento = dataVencimento;
+        this.dataCriacao = dataCriacao;
         this.statusDivida = statusDivida;
         this.tipoDivida = tipoDivida;
         this.descricaoDivida = descricaoDivida;
+        this.IdDivida = IdDivida;
         this.conta = conta;
+    }
+
+    //Construtor teste
+    public Divida(double valorTotal, double valorPago, LocalDate dataVencimento, LocalDate dataCriacao, String statusDivida, String tipoDivida, String descricaoDivida, int IdDivida) {
+        this.valorTotal = valorTotal;
+        this.valorPago = valorPago;
+        this.dataVencimento = dataVencimento;
+        this.dataCriacao = dataCriacao;
+        this.statusDivida = statusDivida;
+        this.tipoDivida = tipoDivida;
+        this.descricaoDivida = descricaoDivida;
         this.IdDivida = IdDivida;
     }
 
