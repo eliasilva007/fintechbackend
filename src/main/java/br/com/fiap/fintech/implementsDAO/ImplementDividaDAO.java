@@ -26,7 +26,7 @@ public class ImplementDividaDAO implements DividaDAO {
 
     @Override
     public void insert(Divida divida) {
-        String sql = "INSERT INTO T_Divida (id_divida, valor_total, valor_pago, data_vencimento, status, tipo, descricao) " +
+        String sql = "INSERT INTO T_Divida (id_divida, valor_total, valor_pago, data_vencimento, status, tipo, descricao, data_criacao) " +
                 "VALUES (RM558943.SEQ_DIVIDA.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = conexao.prepareStatement(sql)) {

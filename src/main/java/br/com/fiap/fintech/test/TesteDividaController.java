@@ -22,13 +22,13 @@ public class TesteDividaController {
 
         // Criando uma nova dívida para teste
         Divida divida = new Divida(
-                1500.00,                           // valorTotal
-                300.00,                            // valorPago
+                500.00,                           // valorTotal
+                500.00,                            // valorPago
                 LocalDate.now().plusDays(30),     // dataVencimento
                 LocalDate.now(),                   // dataCriacao
                 "Em Aberto",                       // statusDivida
-                "Pessoal",                         // tipoDivida
-                "Compra de móveis",                // descricaoDivida
+                "Agiota",                         // tipoDivida
+                "Dinheiro emprestado",                // descricaoDivida
                 1                                   // idDivida
         );
 
@@ -41,7 +41,7 @@ public class TesteDividaController {
         }
 
         // Testando a busca da dívida
-        Divida dividaBuscada = dividaController.buscarDivida(1);
+        Divida dividaBuscada = dividaController.buscarDivida(49);
         if (dividaBuscada != null) {
             System.out.println("Dívida encontrada: " + dividaBuscada.getDescricaoDivida());
         } else {
@@ -55,7 +55,6 @@ public class TesteDividaController {
         }
 
         // Testando a atualização da dívida
-        divida.setValorPago(500);
         try {
             dividaController.atualizarDivida(divida);
             System.out.println("Dívida atualizada com sucesso.");
@@ -65,7 +64,7 @@ public class TesteDividaController {
 
         // Testando a remoção da dívida
         try {
-            dividaController.removerDivida(1);
+            dividaController.removerDivida(49);
             System.out.println("Dívida removida com sucesso.");
         } catch (Exception e) {
             System.out.println("Erro ao remover dívida: " + e.getMessage());
