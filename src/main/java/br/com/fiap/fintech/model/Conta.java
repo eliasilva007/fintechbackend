@@ -43,7 +43,6 @@ public abstract class Conta {
         this.senha = senha;
     }
 
-
     //Construtor Padrão
 
     public Conta(){
@@ -57,6 +56,7 @@ public abstract class Conta {
         this.email = email;
         this.senha = senha;
         this.numeroTelefone = numeroTelefone;
+
 
 
     }
