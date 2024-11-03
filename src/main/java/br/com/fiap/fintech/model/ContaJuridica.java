@@ -1,4 +1,5 @@
 package br.com.fiap.fintech.model;
+import  br.com.fiap.fintech.tipoenum.TipoConta;
 
 public class ContaJuridica extends Conta {
 
@@ -49,25 +50,11 @@ public class ContaJuridica extends Conta {
 
     }
 
-    public ContaJuridica(String nome, String email, String numeroTelefone, String senha, String cnpj, String razaoSocial, String nomeFantasia, String inscricaoEstadual) {
-        super(nome, email, numeroTelefone, senha);
+    public ContaJuridica(int id, String nome, String email, String numeroTelefone, String senha, String cnpj, String razaoSocial, String nomeFantasia, String inscricaoEstadual) {
+        super(id, nome, email, numeroTelefone, senha, tipoConta);
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.nomeFantasia = nomeFantasia;
         this.inscricaoEstadual = inscricaoEstadual;
     }
-
-    //Método adaptado para ContaJuridica
-
-    @Override
-    public void fazerRegistro() {
-        //Lógica para fazer o registro
-
-        System.out.printf("\nUsuário %s, CNPJ n° %s, cadastrado com Sucesso! ", nomeFantasia,cnpj);
-
-    }
-
-    @Override
-    public void fazerLogin() {
-        System.out.println("Usuario Jurídico logado com Sucesso! CNPJ: " + getCnpj());    }
 }

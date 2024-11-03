@@ -117,11 +117,4 @@ public class Divida {
         this.IdDivida = IdDivida;
     }
 
-    //Método da classe
-    public void situacaoDivida(){
-        //Lógica que calcula a divida do usuário
-
-        System.out.println("Essa é a situação da divida do usuario: " + statusDivida + " ---> Motivo da divida: " + descricaoDivida);
-    }
-
 }

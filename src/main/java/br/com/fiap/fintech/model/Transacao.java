@@ -1,5 +1,7 @@
 package br.com.fiap.fintech.model;
 
+import br.com.fiap.fintech.tipoenum.TipoTransacao;
+
 import java.time.LocalDate;
 
 ///

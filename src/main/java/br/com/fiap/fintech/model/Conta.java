@@ -1,15 +1,26 @@
 package br.com.fiap.fintech.model;
+import br.com.fiap.fintech.tipoenum.TipoConta;
 
 public abstract class Conta {
 
     //Atributos
 
+    protected int id;
     protected String nome;
     protected String email;
     protected String numeroTelefone;
     protected String senha;
+    protected TipoConta tipoConta;
 
     //Getters e Setters da classe:
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
@@ -43,6 +54,14 @@ public abstract class Conta {
         this.senha = senha;
     }
 
+    public TipoConta getTipoConta() {
+        return tipoConta;
+    }
+
+    public void setTipoConta(TipoConta tipoConta) {
+        this.tipoConta = tipoConta;
+    }
+
     //Construtor Padrão
 
     public Conta(){
@@ -51,28 +70,14 @@ public abstract class Conta {
 
     //Construtor Personalizado
 
-    public Conta(String nome, String email, String numeroTelefone, String senha){
+    public Conta(int id, String nome, String email, String numeroTelefone, String senha, TipoConta tipoConta){
+        this.id = id;
         this.nome = nome;
         this.email = email;
-        this.senha = senha;
         this.numeroTelefone = numeroTelefone;
+        this.senha = senha;
+        this.tipoConta = tipoConta;
 
-
-
-    }
-
-    //Métodos da classe
-    public void fazerRegistro() {
-        //Lógica para realizar o registro do novo usuário
-
-        System.out.println("Usuário Cadastrado com Sucesso: " + getNome());
-
-
-    }
-    public void fazerLogin(){
-        //Lógica para realizar o Login
-
-        System.out.println("Usuário Logado com Sucesso: "+ getNome());
     }
 
 }
