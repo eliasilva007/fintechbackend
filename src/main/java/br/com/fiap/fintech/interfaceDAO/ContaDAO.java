@@ -20,8 +20,8 @@ public interface ContaDAO {
     // Método para buscar uma conta pelo ID
     Conta buscarPorId(int idUsuario) throws SQLException;
 
-    // Método para login do usuário usando email e senha
-    Conta fazerLogin(String idemtificador, String senha) throws SQLException;
+    // Método para login do usuário usando CPF ou CNPJ e senha
+    Conta fazerLogin(String identificador, String senha) throws SQLException;
 
     // Método para listar todas as contas (pode ser útil para fins administrativos)
     List<Conta> listarTodas() throws SQLException;
