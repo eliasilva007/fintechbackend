@@ -18,6 +18,10 @@ public class ContaRepository {
         this.contaDAO = contaDAO;
     }
 
+    public ContaRepository() {
+
+    }
+
     // Método para cadastrar uma nova conta
     public void cadastrarConta(Conta conta) throws SQLException {
         try (Connection connection = ConnectionFactory.getConnection()) {
