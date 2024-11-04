@@ -27,7 +27,7 @@ public class TesteDividaController {
                 LocalDate.now().plusDays(30),     // dataVencimento
                 LocalDate.now(),                   // dataCriacao
                 "Em Aberto",                       // statusDivida
-                "Agiota",                         // tipoDivida
+                "Banco",                         // tipoDivida
                 "Dinheiro emprestado",                // descricaoDivida
                 1                                   // idDivida
         );

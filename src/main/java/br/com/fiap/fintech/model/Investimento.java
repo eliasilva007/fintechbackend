@@ -11,9 +11,18 @@ public class Investimento {
     private double taxaRetornoInvestimento;
     private LocalDate dataInicio;
     private LocalDate dataFim;
+    private int idInvestimento;
     private Conta conta;
 
     //Getters e Setters
+
+    public int getIdInvestimento() {
+        return idInvestimento;
+    }
+
+    public void setIdInvestimento(int idInvestimento) {
+        this.idInvestimento = idInvestimento;
+    }
 
     public String getDescricaoInvestimento() {
         return descricaoInvestimento;
