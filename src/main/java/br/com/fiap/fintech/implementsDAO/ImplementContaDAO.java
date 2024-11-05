@@ -34,36 +34,13 @@ public class ImplementContaDAO implements ContaDAO {
     }
 
     @Override
-    public void cadastrar(Conta conta) throws SQLException {
+    public void cadastrar(Connection connection, Conta conta) throws SQLException {
         if (conta == null) {
             throw new IllegalArgumentException("Conta não pode ser nula");
         }
 
         try (PreparedStatement stmt = connection.prepareStatement(SQL_INSERT)) {
-            stmt.setString(1, conta.getNome());
-            stmt.setString(2, conta.getEmail());
-            stmt.setString(3, conta.getNumeroTelefone());
-            stmt.setString(4, conta.getSenha());
-            stmt.setString(5, conta.getTipoConta().name());
-
-            if (conta instanceof ContaFisica contaFisica) {
-                stmt.setString(6, contaFisica.getCpf());
-                stmt.setString(7, contaFisica.getRg());
-                stmt.setDate(8, java.sql.Date.valueOf(contaFisica.getDataNascimento()));
-                stmt.setNull(9, java.sql.Types.VARCHAR);
-                stmt.setNull(10, java.sql.Types.VARCHAR);
-                stmt.setNull(11, java.sql.Types.VARCHAR);
-                stmt.setNull(12, java.sql.Types.VARCHAR);
-            } else if (conta instanceof ContaJuridica contaJuridica) {
-                stmt.setNull(6, java.sql.Types.VARCHAR);
-                stmt.setNull(7, java.sql.Types.VARCHAR);
-                stmt.setNull(8, java.sql.Types.DATE);
-                stmt.setString(9, contaJuridica.getCnpj());
-                stmt.setString(10, contaJuridica.getRazaoSocial());
-                stmt.setString(11, contaJuridica.getNomeFantasia());
-                stmt.setString(12, contaJuridica.getInscricaoEstadual());
-            }
-
+            preencherDadosConta(stmt, conta);
             stmt.executeUpdate();
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao cadastrar a conta", e);
@@ -72,35 +49,13 @@ public class ImplementContaDAO implements ContaDAO {
     }
 
     @Override
-    public void atualizar(Conta conta) throws SQLException {
+    public void atualizar(Connection connection, Conta conta) throws SQLException {
         if (conta == null) {
             throw new IllegalArgumentException("Conta não pode ser nula");
         }
 
         try (PreparedStatement stmt = connection.prepareStatement(SQL_UPDATE)) {
-            stmt.setString(1, conta.getNome());
-            stmt.setString(2, conta.getEmail());
-            stmt.setString(3, conta.getNumeroTelefone());
-            stmt.setString(4, conta.getSenha());
-            stmt.setString(5, conta.getTipoConta().name());
-
-            if (conta instanceof ContaFisica contaFisica) {
-                stmt.setString(6, contaFisica.getCpf());
-                stmt.setString(7, contaFisica.getRg());
-                stmt.setDate(8, java.sql.Date.valueOf(contaFisica.getDataNascimento()));
-                stmt.setNull(9, java.sql.Types.VARCHAR);
-                stmt.setNull(10, java.sql.Types.VARCHAR);
-                stmt.setNull(11, java.sql.Types.VARCHAR);
-                stmt.setNull(12, java.sql.Types.VARCHAR);
-            } else if (conta instanceof ContaJuridica contaJuridica) {
-                stmt.setNull(6, java.sql.Types.VARCHAR);
-                stmt.setNull(7, java.sql.Types.VARCHAR);
-                stmt.setNull(8, java.sql.Types.DATE);
-                stmt.setString(9, contaJuridica.getCnpj());
-                stmt.setString(10, contaJuridica.getRazaoSocial());
-                stmt.setString(11, contaJuridica.getNomeFantasia());
-                stmt.setString(12, contaJuridica.getInscricaoEstadual());
-            }
+            preencherDadosConta(stmt, conta);
             stmt.setInt(13, conta.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -110,59 +65,34 @@ public class ImplementContaDAO implements ContaDAO {
     }
 
     @Override
-    public void deletar(int idUsuario) throws SQLException {
+    public void deletar(Connection connection, int idUsuario) throws SQLException {
         try (PreparedStatement stmt = connection.prepareStatement(SQL_DELETE)) {
             stmt.setInt(1, idUsuario);
             stmt.executeUpdate();
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao deletar a conta com ID: " + idUsuario, e);
-            throw e; // Lança a exceção após o log
+            throw e;
         }
     }
 
-
     @Override
-    public Conta buscarPorId(int idUsuario) throws SQLException {
+    public Conta buscarPorId(Connection connection, int idUsuario) throws SQLException {
         try (PreparedStatement stmt = connection.prepareStatement(SQL_SELECT_BY_ID)) {
             stmt.setInt(1, idUsuario);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    TipoConta tipoConta = TipoConta.valueOf(rs.getString("tipoConta"));
-                    if (tipoConta == TipoConta.FISICA) {
-                        return new ContaFisica(
-                                rs.getInt("id"),
-                                rs.getString("nome"),
-                                rs.getString("email"),
-                                rs.getString("numeroTelefone"),
-                                rs.getString("senha"),
-                                rs.getDate("dataNascimento").toLocalDate(),
-                                rs.getString("cpf"),
-                                rs.getString("rg")
-                        );
-                    } else if (tipoConta == TipoConta.JURIDICA) {
-                        return new ContaJuridica(
-                                rs.getInt("id"),
-                                rs.getString("nome"),
-                                rs.getString("email"),
-                                rs.getString("numeroTelefone"),
-                                rs.getString("senha"),
-                                rs.getString("cnpj"),
-                                rs.getString("razaoSocial"),
-                                rs.getString("nomeFantasia"),
-                                rs.getString("inscricaoEstadual")
-                        );
-                    }
+                    return construirConta(rs);
                 }
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao buscar conta por ID", e);
             throw e;
         }
-        return null; // Retorna null se não encontrar a conta
+        return null;
     }
 
     @Override
-    public Conta fazerLogin(String identificador, String senha) throws SQLException {
+    public Conta fazerLogin(Connection connection, String identificador, String senha) throws SQLException {
         if (identificador.length() != 11 && identificador.length() != 14) {
             throw new IdentificadorInvalidoException("Identificador inválido. CPF deve ter 11 dígitos e CNPJ 14 dígitos.");
         }
@@ -175,76 +105,83 @@ public class ImplementContaDAO implements ContaDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    TipoConta tipoConta = TipoConta.valueOf(rs.getString("tipoConta"));
-                    if (tipoConta == TipoConta.FISICA) {
-                        return new ContaFisica(
-                                rs.getInt("id"),
-                                rs.getString("nome"),
-                                rs.getString("email"),
-                                rs.getString("numeroTelefone"),
-                                rs.getString("senha"),
-                                rs.getDate("dataNascimento").toLocalDate(),
-                                rs.getString("cpf"),
-                                rs.getString("rg")
-                        );
-                    } else if (tipoConta == TipoConta.JURIDICA) {
-                        return new ContaJuridica(
-                                rs.getInt("id"),
-                                rs.getString("nome"),
-                                rs.getString("email"),
-                                rs.getString("numeroTelefone"),
-                                rs.getString("senha"),
-                                rs.getString("cnpj"),
-                                rs.getString("razaoSocial"),
-                                rs.getString("nomeFantasia"),
-                                rs.getString("inscricaoEstadual")
-                        );
-                    }
+                    return construirConta(rs);
                 }
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao realizar login", e);
             throw e;
         }
-        return null; // Retorna null se o login falhar
+        return null;
     }
 
     @Override
-    public List<Conta> listarTodas() throws SQLException {
+    public List<Conta> listarTodas(Connection connection) throws SQLException {
         List<Conta> contas = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(SQL_LIST_ALL);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                TipoConta tipoConta = TipoConta.valueOf(rs.getString("tipoConta"));
-                if (tipoConta == TipoConta.FISICA) {
-                    contas.add(new ContaFisica(
-                            rs.getInt("id"),
-                            rs.getString("nome"),
-                            rs.getString("email"),
-                            rs.getString("numeroTelefone"),
-                            rs.getString("senha"),
-                            rs.getDate("dataNascimento").toLocalDate(),
-                            rs.getString("cpf"),
-                            rs.getString("rg")
-                    ));
-                } else if (tipoConta == TipoConta.JURIDICA) {
-                    contas.add(new ContaJuridica(
-                            rs.getInt("id"),
-                            rs.getString("nome"),
-                            rs.getString("email"),
-                            rs.getString("numeroTelefone"),
-                            rs.getString("senha"),
-                            rs.getString("cnpj"),
-                            rs.getString("razaoSocial"),
-                            rs.getString("nomeFantasia"),
-                            rs.getString("inscricaoEstadual")
-                    ));
-                }
+                contas.add(construirConta(rs));
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao listar contas", e);
             throw e;
         }
         return contas;
+    }
+
+    private void preencherDadosConta(PreparedStatement stmt, Conta conta) throws SQLException {
+        stmt.setString(1, conta.getNome());
+        stmt.setString(2, conta.getEmail());
+        stmt.setString(3, conta.getNumeroTelefone());
+        stmt.setString(4, conta.getSenha());
+        stmt.setString(5, conta.getTipoConta().name());
+
+        if (conta instanceof ContaFisica contaFisica) {
+            stmt.setString(6, contaFisica.getCpf());
+            stmt.setString(7, contaFisica.getRg());
+            stmt.setDate(8, java.sql.Date.valueOf(contaFisica.getDataNascimento()));
+            stmt.setNull(9, java.sql.Types.VARCHAR);
+            stmt.setNull(10, java.sql.Types.VARCHAR);
+            stmt.setNull(11, java.sql.Types.VARCHAR);
+            stmt.setNull(12, java.sql.Types.VARCHAR);
+        } else if (conta instanceof ContaJuridica contaJuridica) {
+            stmt.setNull(6, java.sql.Types.VARCHAR);
+            stmt.setNull(7, java.sql.Types.VARCHAR);
+            stmt.setNull(8, java.sql.Types.DATE);
+            stmt.setString(9, contaJuridica.getCnpj());
+            stmt.setString(10, contaJuridica.getRazaoSocial());
+            stmt.setString(11, contaJuridica.getNomeFantasia());
+            stmt.setString(12, contaJuridica.getInscricaoEstadual());
+        }
+    }
+
+    private Conta construirConta(ResultSet rs) throws SQLException {
+        TipoConta tipoConta = TipoConta.valueOf(rs.getString("tipoConta"));
+        if (tipoConta == TipoConta.FISICA) {
+            return new ContaFisica(
+                    rs.getInt("id"),
+                    rs.getString("nome"),
+                    rs.getString("email"),
+                    rs.getString("numeroTelefone"),
+                    rs.getString("senha"),
+                    rs.getDate("dataNascimento").toLocalDate(),
+                    rs.getString("cpf"),
+                    rs.getString("rg")
+            );
+        } else if (tipoConta == TipoConta.JURIDICA) {
+            return new ContaJuridica(
+                    rs.getInt("id"),
+                    rs.getString("nome"),
+                    rs.getString("email"),
+                    rs.getString("numeroTelefone"),
+                    rs.getString("senha"),
+                    rs.getString("cnpj"),
+                    rs.getString("razaoSocial"),
+                    rs.getString("nomeFantasia"),
+                    rs.getString("inscricaoEstadual")
+            );
+        }
+        return null;
     }
 }

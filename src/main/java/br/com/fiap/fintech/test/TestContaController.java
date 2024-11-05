@@ -2,15 +2,21 @@
 package br.com.fiap.fintech.test;
 
 import br.com.fiap.fintech.controller.ContaController;
+import br.com.fiap.fintech.interfaceDAO.ContaDAO;
 import br.com.fiap.fintech.model.ContaFisica;
 import br.com.fiap.fintech.repository.ContaRepository;
 import br.com.fiap.fintech.service.ContaService;
+import br.com.fiap.fintech.implementsDAO.ImplementContaDAO;
+
+import java.sql.Connection;
 
 public class TestContaController {
 
+    private static br.com.fiap.fintech.interfaceDAO.ContaDAO ContaDAO;
+
     public static void main(String[] args) {
         // Inicialização do repository e service para o controller
-        ContaRepository contaRepository = new ContaRepository();
+        ContaRepository contaRepository = new ContaRepository(ContaDAO);
         ContaService contaService = new ContaService(contaRepository);
         ContaController contaController = new ContaController(contaService);
 
@@ -19,6 +25,7 @@ public class TestContaController {
         novaConta.setNome("Carlos Souza");
         novaConta.setCpf("12345678901");
         novaConta.setEmail("carlos.souza@example.com");
+
 
         System.out.println("=== Teste de Cadastro de Conta ===");
         contaController.cadastrarConta(novaConta);

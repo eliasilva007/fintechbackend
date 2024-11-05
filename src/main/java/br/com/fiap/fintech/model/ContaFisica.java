@@ -1,5 +1,7 @@
 package br.com.fiap.fintech.model;
 
+import br.com.fiap.fintech.tipoenum.TipoConta;
+
 import java.time.LocalDate;
 
 public class ContaFisica extends Conta {
@@ -43,7 +45,7 @@ public class ContaFisica extends Conta {
     }
 
     public ContaFisica(int id, String nome, String email, String numeroTelefone, String senha, LocalDate dataNascimento, String cpf, String rg) {
-        super(id, nome, email, numeroTelefone, senha);
+        super(id, nome, email, numeroTelefone, senha, TipoConta.FISICA);
         this.cpf = cpf;
         this.rg = rg;
         this.dataNascimento = dataNascimento;

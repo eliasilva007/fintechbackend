@@ -51,7 +51,7 @@ public class ContaJuridica extends Conta {
     }
 
     public ContaJuridica(int id, String nome, String email, String numeroTelefone, String senha, String cnpj, String razaoSocial, String nomeFantasia, String inscricaoEstadual) {
-        super(id, nome, email, numeroTelefone, senha, tipoConta);
+        super(id, nome, email, numeroTelefone, senha, TipoConta.JURIDICA);
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.nomeFantasia = nomeFantasia;
