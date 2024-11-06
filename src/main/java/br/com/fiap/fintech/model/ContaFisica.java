@@ -41,7 +41,7 @@ public class ContaFisica extends Conta {
 
     // construtores
 
-    public ContaFisica() {
+    public ContaFisica(String nome, String email, String number, String senha, LocalDate localDate, String id, String s) {
     }
 
     public ContaFisica(int id, String nome, String email, String numeroTelefone, String senha, LocalDate dataNascimento, String cpf, String rg) {

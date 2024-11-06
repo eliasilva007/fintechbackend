@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface ContaDAO {
 
-        void cadastrar(Connection connection, Conta conta) throws SQLException;
+        void cadastrar(Conta conta) throws SQLException;
 
-        void atualizar(Connection connection, Conta conta) throws SQLException;
-        void deletar(Connection connection, int idUsuario) throws SQLException;
-        Conta buscarPorId(Connection connection, int idUsuario) throws SQLException;
-        Conta fazerLogin(Connection connection, String identificador, String senha) throws SQLException;
-        List<Conta> listarTodas(Connection connection) throws SQLException;
+        void atualizar(Conta conta) throws SQLException;
+        void deletar(int idUsuario) throws SQLException;
+        Conta buscarPorId(int idUsuario) throws SQLException;
+        Conta fazerLogin(String identificador, String senha) throws SQLException;
+        List<Conta> listarTodas() throws SQLException;
 
 
 

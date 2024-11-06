@@ -4,6 +4,7 @@ import br.com.fiap.fintech.exceptions.ContaNaoEncontradaException;
 import br.com.fiap.fintech.model.Conta;
 import br.com.fiap.fintech.service.ContaService;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ContaController {
     }
 
     // Cadastrar uma nova conta
-    public void cadastrarConta(Conta conta) {
+    public void cadastrarConta(Connection connection, Conta conta) {
         try {
             contaService.cadastrarConta(conta);
             System.out.println("Conta cadastrada com sucesso!");

@@ -7,10 +7,7 @@ import br.com.fiap.fintech.model.ContaFisica;
 import br.com.fiap.fintech.model.ContaJuridica;
 import br.com.fiap.fintech.tipoenum.TipoConta;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,27 +16,30 @@ import java.util.logging.Logger;
 public class ImplementContaDAO implements ContaDAO {
     private static final Logger logger = Logger.getLogger(ImplementContaDAO.class.getName());
 
-    private static final String SQL_INSERT = "INSERT INTO T_Conta (nome, email, numeroTelefone, senha, tipoConta, cpf, rg, dataNascimento, cnpj, razaoSocial, nomeFantasia, inscricaoEstadual) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_UPDATE = "UPDATE T_Conta SET nome = ?, email = ?, numeroTelefone = ?, senha = ?, tipoConta = ?, cpf = ?, rg = ?, dataNascimento = ?, cnpj = ?, razaoSocial = ?, nomeFantasia = ?, inscricaoEstadual = ? WHERE id = ?";
-    private static final String SQL_DELETE = "DELETE FROM T_Conta WHERE id = ?";
-    private static final String SQL_SELECT_BY_ID = "SELECT * FROM T_Conta WHERE id = ?";
-    private static final String SQL_LOGIN_CPF = "SELECT * FROM T_Conta WHERE cpf = ? AND senha = ?";
-    private static final String SQL_LOGIN_CNPJ = "SELECT * FROM T_Conta WHERE cnpj = ? AND senha = ?";
-    private static final String SQL_LIST_ALL = "SELECT * FROM T_Conta";
-
-    private final Connection connection;
+    // Atualize as queries para refletir as tabelas separadas para fisica e juridica
+    private static final String SQL_INSERT_FISICA = "INSERT INTO T_USUARIO (nome, email, numeroTelefone, senha, tipoConta, cpf, rg, dataNascimento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_INSERT_JURIDICA = "INSERT INTO T_USUARIO (nome, email, numeroTelefone, senha, tipoConta, cnpj, razaoSocial, nomeFantasia, inscricaoEstadual) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_UPDATE = "UPDATE T_USUARIO SET nome = ?, email = ?, numeroTelefone = ?, senha = ?, tipoConta = ?, cpf = ?, rg = ?, dataNascimento = ?, cnpj = ?, razaoSocial = ?, nomeFantasia = ?, inscricaoEstadual = ? WHERE id = ?";
+    private static final String SQL_DELETE = "DELETE FROM T_USUARIO WHERE id = ?";
+    private static final String SQL_SELECT_BY_ID = "SELECT * FROM T_USUARIO WHERE id = ?";
+    private static final String SQL_LOGIN_CPF = "SELECT * FROM T_USUARIO WHERE cpf = ? AND senha = ?";
+    private static final String SQL_LOGIN_CNPJ = "SELECT * FROM T_USUARIO WHERE cnpj = ? AND senha = ?";
+    private static final String SQL_LIST_ALL = "SELECT * FROM T_USUARIO";
+    private Connection connection;
 
     public ImplementContaDAO(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public void cadastrar(Connection connection, Conta conta) throws SQLException {
+    public void cadastrar(Conta conta) throws SQLException {
         if (conta == null) {
             throw new IllegalArgumentException("Conta não pode ser nula");
         }
 
-        try (PreparedStatement stmt = connection.prepareStatement(SQL_INSERT)) {
+        // Verificar o tipo de conta e usar a SQL de inserção correta
+        try (PreparedStatement stmt = connection.prepareStatement(
+                conta instanceof ContaFisica ? SQL_INSERT_FISICA : SQL_INSERT_JURIDICA)) {
             preencherDadosConta(stmt, conta);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -49,7 +49,7 @@ public class ImplementContaDAO implements ContaDAO {
     }
 
     @Override
-    public void atualizar(Connection connection, Conta conta) throws SQLException {
+    public void atualizar(Conta conta) throws SQLException {
         if (conta == null) {
             throw new IllegalArgumentException("Conta não pode ser nula");
         }
@@ -65,7 +65,7 @@ public class ImplementContaDAO implements ContaDAO {
     }
 
     @Override
-    public void deletar(Connection connection, int idUsuario) throws SQLException {
+    public void deletar(int idUsuario) throws SQLException {
         try (PreparedStatement stmt = connection.prepareStatement(SQL_DELETE)) {
             stmt.setInt(1, idUsuario);
             stmt.executeUpdate();
@@ -76,7 +76,7 @@ public class ImplementContaDAO implements ContaDAO {
     }
 
     @Override
-    public Conta buscarPorId(Connection connection, int idUsuario) throws SQLException {
+    public Conta buscarPorId(int idUsuario) throws SQLException {
         try (PreparedStatement stmt = connection.prepareStatement(SQL_SELECT_BY_ID)) {
             stmt.setInt(1, idUsuario);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -92,7 +92,7 @@ public class ImplementContaDAO implements ContaDAO {
     }
 
     @Override
-    public Conta fazerLogin(Connection connection, String identificador, String senha) throws SQLException {
+    public Conta fazerLogin(String identificador, String senha) throws SQLException {
         if (identificador.length() != 11 && identificador.length() != 14) {
             throw new IdentificadorInvalidoException("Identificador inválido. CPF deve ter 11 dígitos e CNPJ 14 dígitos.");
         }
@@ -116,7 +116,7 @@ public class ImplementContaDAO implements ContaDAO {
     }
 
     @Override
-    public List<Conta> listarTodas(Connection connection) throws SQLException {
+    public List<Conta> listarTodas() throws SQLException {
         List<Conta> contas = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(SQL_LIST_ALL);
              ResultSet rs = stmt.executeQuery()) {
@@ -138,23 +138,24 @@ public class ImplementContaDAO implements ContaDAO {
         stmt.setString(5, conta.getTipoConta().name());
 
         if (conta instanceof ContaFisica contaFisica) {
-            stmt.setString(6, contaFisica.getCpf());
-            stmt.setString(7, contaFisica.getRg());
-            stmt.setDate(8, java.sql.Date.valueOf(contaFisica.getDataNascimento()));
-            stmt.setNull(9, java.sql.Types.VARCHAR);
-            stmt.setNull(10, java.sql.Types.VARCHAR);
-            stmt.setNull(11, java.sql.Types.VARCHAR);
-            stmt.setNull(12, java.sql.Types.VARCHAR);
+            stmt.setString(6, contaFisica.getCpf());  // Coluna CPF
+            stmt.setString(7, contaFisica.getRg());   // Coluna RG
+            stmt.setDate(8, Date.valueOf(contaFisica.getDataNascimento())); // Coluna dataNascimento
+            stmt.setNull(9, Types.VARCHAR);  // Null para CNPJ
+            stmt.setNull(10, Types.VARCHAR); // Null para razaoSocial
+            stmt.setNull(11, Types.VARCHAR); // Null para nomeFantasia
+            stmt.setNull(12, Types.VARCHAR); // Null para inscricaoEstadual
         } else if (conta instanceof ContaJuridica contaJuridica) {
-            stmt.setNull(6, java.sql.Types.VARCHAR);
-            stmt.setNull(7, java.sql.Types.VARCHAR);
-            stmt.setNull(8, java.sql.Types.DATE);
-            stmt.setString(9, contaJuridica.getCnpj());
-            stmt.setString(10, contaJuridica.getRazaoSocial());
-            stmt.setString(11, contaJuridica.getNomeFantasia());
-            stmt.setString(12, contaJuridica.getInscricaoEstadual());
+            stmt.setNull(6, Types.VARCHAR);  // Null para CPF
+            stmt.setNull(7, Types.VARCHAR);  // Null para RG
+            stmt.setNull(8, Types.DATE);     // Null para dataNascimento
+            stmt.setString(9, contaJuridica.getCnpj()); // Coluna CNPJ
+            stmt.setString(10, contaJuridica.getRazaoSocial()); // Coluna RazaoSocial
+            stmt.setString(11, contaJuridica.getNomeFantasia()); // Coluna NomeFantasia
+            stmt.setString(12, contaJuridica.getInscricaoEstadual()); // Coluna InscricaoEstadual
         }
     }
+
 
     private Conta construirConta(ResultSet rs) throws SQLException {
         TipoConta tipoConta = TipoConta.valueOf(rs.getString("tipoConta"));
