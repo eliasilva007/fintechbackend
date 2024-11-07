@@ -17,7 +17,7 @@ public class ImplementContaDAO implements ContaDAO {
     private static final Logger logger = Logger.getLogger(ImplementContaDAO.class.getName());
 
     // Atualize as queries para refletir as tabelas separadas para fisica e juridica
-    private static final String SQL_INSERT_FISICA = "INSERT INTO T_USUARIO (nome, email, numeroTelefone, senha, tipoConta, cpf, rg, dataNascimento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_INSERT_FISICA = "INSERT INTO T_USUARIO (nm_usuario, email, numeroTelefone, senha, tipoConta, cpf, rg, dataNascimento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_INSERT_JURIDICA = "INSERT INTO T_USUARIO (nome, email, numeroTelefone, senha, tipoConta, cnpj, razaoSocial, nomeFantasia, inscricaoEstadual) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE = "UPDATE T_USUARIO SET nome = ?, email = ?, numeroTelefone = ?, senha = ?, tipoConta = ?, cpf = ?, rg = ?, dataNascimento = ?, cnpj = ?, razaoSocial = ?, nomeFantasia = ?, inscricaoEstadual = ? WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM T_USUARIO WHERE id = ?";
@@ -39,7 +39,9 @@ public class ImplementContaDAO implements ContaDAO {
 
         // Verificar o tipo de conta e usar a SQL de inserção correta
         try (PreparedStatement stmt = connection.prepareStatement(
-                conta instanceof ContaFisica ? SQL_INSERT_FISICA : SQL_INSERT_JURIDICA)) {
+
+                conta instanceof ContaFisica ? SQL_INSERT_FISICA : SQL_INSERT_JURIDICA
+        )) {
             preencherDadosConta(stmt, conta);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -159,7 +161,7 @@ public class ImplementContaDAO implements ContaDAO {
 
     private Conta construirConta(ResultSet rs) throws SQLException {
         TipoConta tipoConta = TipoConta.valueOf(rs.getString("tipoConta"));
-        if (tipoConta == TipoConta.FISICA) {
+        if (tipoConta == TipoConta.F) {
             return new ContaFisica(
                     rs.getInt("id"),
                     rs.getString("nome"),
@@ -170,7 +172,7 @@ public class ImplementContaDAO implements ContaDAO {
                     rs.getString("cpf"),
                     rs.getString("rg")
             );
-        } else if (tipoConta == TipoConta.JURIDICA) {
+        } else if (tipoConta == TipoConta.J) {
             return new ContaJuridica(
                     rs.getInt("id"),
                     rs.getString("nome"),

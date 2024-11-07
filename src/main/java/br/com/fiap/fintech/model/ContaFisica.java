@@ -12,6 +12,9 @@ public class ContaFisica extends Conta {
     private String rg;
     private LocalDate dataNascimento;
 
+
+
+
     // getters e setters
 
     public String getCpf() {
@@ -45,7 +48,7 @@ public class ContaFisica extends Conta {
     }
 
     public ContaFisica(int id, String nome, String email, String numeroTelefone, String senha, LocalDate dataNascimento, String cpf, String rg) {
-        super(id, nome, email, numeroTelefone, senha, TipoConta.FISICA);
+        super(id, nome, email, numeroTelefone, senha, TipoConta.F);
         this.cpf = cpf;
         this.rg = rg;
         this.dataNascimento = dataNascimento;

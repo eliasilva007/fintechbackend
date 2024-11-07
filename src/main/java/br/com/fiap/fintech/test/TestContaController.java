@@ -6,9 +6,11 @@ import br.com.fiap.fintech.factory.ConnectionFactory;
 import br.com.fiap.fintech.interfaceDAO.ContaDAO;
 import br.com.fiap.fintech.model.Conta;
 import br.com.fiap.fintech.model.ContaFisica;
+import br.com.fiap.fintech.model.ContaJuridica;
 import br.com.fiap.fintech.repository.ContaRepository;
 import br.com.fiap.fintech.service.ContaService;
 import br.com.fiap.fintech.implementsDAO.ImplementContaDAO;
+import br.com.fiap.fintech.tipoenum.TipoConta;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,8 +33,9 @@ public class TestContaController {
 
             // Teste o cadastro
             // Exemplo de uso
-            Conta novaConta = new ContaFisica(0, "joao.silva@example.com", "joao.silva@example.com", "11912345678", "senhaSegura123",
-                    LocalDate.of(2024, 11, 1), "12256846590", "13246578");
+            System.out.println();
+            Conta novaConta = new ContaFisica(0, "joao", "joao.silva@example.com", "11912345678", "senhaSegura123",
+                    LocalDate.of(2024, 11, 1), "12256846599", "13246578");
             contaController.cadastrarConta(connection, novaConta); // Passe a connection aqui também
         } catch (SQLException e) {
             e.printStackTrace();
