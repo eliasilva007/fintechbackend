@@ -33,9 +33,10 @@ public class TestContaController {
 
             // Teste o cadastro
             // Exemplo de uso
-            System.out.println();
-            Conta novaConta = new ContaFisica(0, "joao", "joao.silva@example.com", "11912345678", "senhaSegura123",
-                    LocalDate.of(2024, 11, 1), "12256846599", "13246578");
+            LocalDate novaDataNascimento = LocalDate.of(1990, 5, 20);
+
+            ContaFisica novaConta = new ContaFisica(0, "João Silva", "joao.silva@example.com", "11912345678", "senhaSegura123",
+                    novaDataNascimento, "12345678901", "12345678");
             contaController.cadastrarConta(connection, novaConta); // Passe a connection aqui também
         } catch (SQLException e) {
             e.printStackTrace();

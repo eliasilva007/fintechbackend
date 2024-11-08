@@ -17,8 +17,8 @@ public class ImplementContaDAO implements ContaDAO {
     private static final Logger logger = Logger.getLogger(ImplementContaDAO.class.getName());
 
     // Atualize as queries para refletir as tabelas separadas para fisica e juridica
-    private static final String SQL_INSERT_FISICA = "INSERT INTO T_USUARIO (nm_usuario, email, numeroTelefone, senha, tipoConta, cpf, rg, dataNascimento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_INSERT_JURIDICA = "INSERT INTO T_USUARIO (nome, email, numeroTelefone, senha, tipoConta, cnpj, razaoSocial, nomeFantasia, inscricaoEstadual) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_INSERT_FISICA = "INSERT INTO T_USUARIO (nm_usuario, email, nm_telefone, senha, tipo_pessoa, nr_cpf, nr_rg, dt_nascimento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_INSERT_JURIDICA = "INSERT INTO T_USUARIO (nm_usuario, email, numeroTelefone, senha, tipoConta, cnpj, razaoSocial, nomeFantasia, inscricaoEstadual) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE = "UPDATE T_USUARIO SET nome = ?, email = ?, numeroTelefone = ?, senha = ?, tipoConta = ?, cpf = ?, rg = ?, dataNascimento = ?, cnpj = ?, razaoSocial = ?, nomeFantasia = ?, inscricaoEstadual = ? WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM T_USUARIO WHERE id = ?";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM T_USUARIO WHERE id = ?";
@@ -143,14 +143,7 @@ public class ImplementContaDAO implements ContaDAO {
             stmt.setString(6, contaFisica.getCpf());  // Coluna CPF
             stmt.setString(7, contaFisica.getRg());   // Coluna RG
             stmt.setDate(8, Date.valueOf(contaFisica.getDataNascimento())); // Coluna dataNascimento
-            stmt.setNull(9, Types.VARCHAR);  // Null para CNPJ
-            stmt.setNull(10, Types.VARCHAR); // Null para razaoSocial
-            stmt.setNull(11, Types.VARCHAR); // Null para nomeFantasia
-            stmt.setNull(12, Types.VARCHAR); // Null para inscricaoEstadual
         } else if (conta instanceof ContaJuridica contaJuridica) {
-            stmt.setNull(6, Types.VARCHAR);  // Null para CPF
-            stmt.setNull(7, Types.VARCHAR);  // Null para RG
-            stmt.setNull(8, Types.DATE);     // Null para dataNascimento
             stmt.setString(9, contaJuridica.getCnpj()); // Coluna CNPJ
             stmt.setString(10, contaJuridica.getRazaoSocial()); // Coluna RazaoSocial
             stmt.setString(11, contaJuridica.getNomeFantasia()); // Coluna NomeFantasia
