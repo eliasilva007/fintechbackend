@@ -29,61 +29,61 @@ public class ContaRepository {
         }
     }
 
-    // Método para atualizar uma conta existente
-    public void atualizarConta(Conta conta) throws SQLException {
-        try (Connection connection = ConnectionFactory.getConnection()) {
-            contaDAO.atualizar(conta); // Passando a conexão
-            logger.info("Conta atualizada com sucesso: " + conta);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao atualizar a conta: " + e.getMessage(), e);
-            throw e;
-        }
-    }
-
-    // Método para deletar uma conta
-    public void deletarConta(int idUsuario) throws SQLException {
-        try (Connection connection = ConnectionFactory.getConnection()) {
-            contaDAO.deletar(idUsuario); // Passando a conexão
-            logger.info("Conta deletada com sucesso para o ID: " + idUsuario);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao deletar a conta: " + e.getMessage(), e);
-            throw e;
-        }
-    }
-
-    // Método para buscar uma conta pelo ID
-    public Conta buscarContaPorId(int idUsuario) throws SQLException {
-        try (Connection connection = ConnectionFactory.getConnection()) {
-            Conta conta = contaDAO.buscarPorId(idUsuario); // Passando a conexão
-            logger.info("Conta buscada com sucesso para o ID: " + idUsuario);
-            return conta;
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao buscar a conta: " + e.getMessage(), e);
-            throw e;
-        }
-    }
-
-    // Método para login do usuário
-    public Conta fazerLogin(String identificador, String senha) throws SQLException {
-        try (Connection connection = ConnectionFactory.getConnection()) {
-            Conta conta = contaDAO.fazerLogin(identificador, senha); // Passando a conexão
-            logger.info("Login realizado com sucesso para o identificador: " + identificador);
-            return conta;
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao fazer login: " + e.getMessage(), e);
-            throw e;
-        }
-    }
-
-    // Método para listar todas as contas
-    public List<Conta> listarTodasContas() throws SQLException {
-        try (Connection connection = ConnectionFactory.getConnection()) {
-            List<Conta> contas = contaDAO.listarTodas(); // Passando a conexão
-            logger.info("Listagem de todas as contas realizada com sucesso.");
-            return contas;
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao listar todas as contas: " + e.getMessage(), e);
-            throw e;
-        }
-    }
+//    // Método para atualizar uma conta existente
+//    public void atualizarConta(Conta conta) throws SQLException {
+//        try (Connection connection = ConnectionFactory.getConnection()) {
+//            contaDAO.atualizar(conta); // Passando a conexão
+//            logger.info("Conta atualizada com sucesso: " + conta);
+//        } catch (SQLException e) {
+//            logger.log(Level.SEVERE, "Erro ao atualizar a conta: " + e.getMessage(), e);
+//            throw e;
+//        }
+//    }
+//
+//    // Método para deletar uma conta
+//    public void deletarConta(int idUsuario) throws SQLException {
+//        try (Connection connection = ConnectionFactory.getConnection()) {
+//            contaDAO.deletar(idUsuario); // Passando a conexão
+//            logger.info("Conta deletada com sucesso para o ID: " + idUsuario);
+//        } catch (SQLException e) {
+//            logger.log(Level.SEVERE, "Erro ao deletar a conta: " + e.getMessage(), e);
+//            throw e;
+//        }
+//    }
+//
+//    // Método para buscar uma conta pelo ID
+//    public Conta buscarContaPorId(int idUsuario) throws SQLException {
+//        try (Connection connection = ConnectionFactory.getConnection()) {
+//            Conta conta = contaDAO.buscarPorId(idUsuario); // Passando a conexão
+//            logger.info("Conta buscada com sucesso para o ID: " + idUsuario);
+//            return conta;
+//        } catch (SQLException e) {
+//            logger.log(Level.SEVERE, "Erro ao buscar a conta: " + e.getMessage(), e);
+//            throw e;
+//        }
+//    }
+//
+//    // Método para login do usuário
+//    public Conta fazerLogin(String identificador, String senha) throws SQLException {
+//        try (Connection connection = ConnectionFactory.getConnection()) {
+//            Conta conta = contaDAO.fazerLogin(identificador, senha); // Passando a conexão
+//            logger.info("Login realizado com sucesso para o identificador: " + identificador);
+//            return conta;
+//        } catch (SQLException e) {
+//            logger.log(Level.SEVERE, "Erro ao fazer login: " + e.getMessage(), e);
+//            throw e;
+//        }
+//    }
+//
+//    // Método para listar todas as contas
+//    public List<Conta> listarTodasContas() throws SQLException {
+//        try (Connection connection = ConnectionFactory.getConnection()) {
+//            List<Conta> contas = contaDAO.listarTodas(); // Passando a conexão
+//            logger.info("Listagem de todas as contas realizada com sucesso.");
+//            return contas;
+//        } catch (SQLException e) {
+//            logger.log(Level.SEVERE, "Erro ao listar todas as contas: " + e.getMessage(), e);
+//            throw e;
+//        }
+//    }
 }

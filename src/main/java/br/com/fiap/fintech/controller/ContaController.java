@@ -26,57 +26,57 @@ public class ContaController {
         }
     }
 
-    // Atualizar uma conta existente
-    public void atualizarConta(Conta conta) {
-        try {
-            contaService.atualizarConta(conta);
-            System.out.println("Conta atualizada com sucesso!");
-        } catch (SQLException e) {
-            System.err.println("Erro ao atualizar conta: " + e.getMessage());
-        }
-    }
-
-    // Buscar uma conta por ID
-    public Conta buscarContaPorId(int id) {
-        try {
-            return contaService.buscarContaPorId(id);
-        } catch (ContaNaoEncontradaException e) {
-            System.err.println("Erro: " + e.getMessage());
-        } catch (SQLException e) {
-            System.err.println("Erro ao buscar conta: " + e.getMessage());
-        }
-        return null;
-    }
-
-    // Listar todas as contas
-    public List<Conta> listarTodasContas() {
-        try {
-            return contaService.listarTodasContas();
-        } catch (SQLException e) {
-            System.err.println("Erro ao listar contas: " + e.getMessage());
-        }
-        return null;
-    }
-
-    // Deletar uma conta pelo ID
-    public void deletarConta(int id) {
-        try {
-            contaService.deletarConta(id);
-            System.out.println("Conta deletada com sucesso!");
-        } catch (ContaNaoEncontradaException e) {
-            System.err.println("Erro: " + e.getMessage());
-        } catch (SQLException e) {
-            System.err.println("Erro ao deletar conta: " + e.getMessage());
-        }
-    }
-
-    // Realizar login na conta
-    public Conta login(String identificador, String senha) {
-        try {
-            return contaService.login(identificador, senha);
-        } catch (Exception e) {
-            System.err.println("Erro ao fazer login: " + e.getMessage());
-        }
-        return null;
-    }
+//    // Atualizar uma conta existente
+//    public void atualizarConta(Conta conta) {
+//        try {
+//            contaService.atualizarConta(conta);
+//            System.out.println("Conta atualizada com sucesso!");
+//        } catch (SQLException e) {
+//            System.err.println("Erro ao atualizar conta: " + e.getMessage());
+//        }
+//    }
+//
+//    // Buscar uma conta por ID
+//    public Conta buscarContaPorId(int id) {
+//        try {
+//            return contaService.buscarContaPorId(id);
+//        } catch (ContaNaoEncontradaException e) {
+//            System.err.println("Erro: " + e.getMessage());
+//        } catch (SQLException e) {
+//            System.err.println("Erro ao buscar conta: " + e.getMessage());
+//        }
+//        return null;
+//    }
+//
+//    // Listar todas as contas
+//    public List<Conta> listarTodasContas() {
+//        try {
+//            return contaService.listarTodasContas();
+//        } catch (SQLException e) {
+//            System.err.println("Erro ao listar contas: " + e.getMessage());
+//        }
+//        return null;
+//    }
+//
+//    // Deletar uma conta pelo ID
+//    public void deletarConta(int id) {
+//        try {
+//            contaService.deletarConta(id);
+//            System.out.println("Conta deletada com sucesso!");
+//        } catch (ContaNaoEncontradaException e) {
+//            System.err.println("Erro: " + e.getMessage());
+//        } catch (SQLException e) {
+//            System.err.println("Erro ao deletar conta: " + e.getMessage());
+//        }
+//    }
+//
+//    // Realizar login na conta
+//    public Conta login(String identificador, String senha) {
+//        try {
+//            return contaService.login(identificador, senha);
+//        } catch (Exception e) {
+//            System.err.println("Erro ao fazer login: " + e.getMessage());
+//        }
+//        return null;
+//    }
 }
