@@ -20,7 +20,7 @@ public class ImplementContaDAO implements ContaDAO {
 
     // Atualize as queries para refletir as tabelas separadas para fisica e juridica
     private static final String SQL_INSERT_CONTA= "INSERT INTO T_USUARIO (nm_usuario, email, nm_telefone, senha, tipo_pessoa) VALUES (?, ?, ?, ?, ?)";
-    private static final String SQL_INSERT_FISICA = "INSERT INTO T_PESSOA_FISICA (nr_cpf, nr_rg, dt_nascimento) VALUES (?, ?, ?)";
+    private static final String SQL_INSERT_FISICA = "INSERT INTO T_PESSOA_FISICA (nr_cpf, nr_rg, dt_nascimento) VALUES (?, ?, ?, ?)";
     private static final String SQL_INSERT_JURIDICA = "INSERT INTO T_PESSOA_JURIDICA (cnpj, razaoSocial, nomeFantasia, inscricaoEstadual) VALUES (?, ?, ?, ?)";
     private static final String SQL_UPDATE = "UPDATE T_USUARIO SET nome = ?, email = ?, numeroTelefone = ?, senha = ?, tipoConta = ?, cpf = ?, rg = ?, dataNascimento = ?, cnpj = ?, razaoSocial = ?, nomeFantasia = ?, inscricaoEstadual = ? WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM T_USUARIO WHERE id = ?";
@@ -41,14 +41,51 @@ public class ImplementContaDAO implements ContaDAO {
     @Override
     public void cadastrar(Conta conta) throws SQLException {
         String sql = "INSERT INTO T_USUARIO (nm_usuario, email, nr_telefone, senha, tipo_pessoa) VALUES (?, ?, ?, ?, ?)";
-
+        if (conta == null) {
+          throw new IllegalArgumentException("Conta não pode ser nula");
+       }
         try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
             stmt.setString(1, conta.getNome());
             stmt.setString(2, conta.getEmail());
             stmt.setString(3, conta.getNumeroTelefone());
-            stmt.setString(4, conta.getSenha());           // senha deve estar na posição 4
-            stmt.setString(5, conta.getTipoConta().name()); // tipo_pessoa deve estar na posição 5
+            stmt.setString(4, conta.getTipoConta());// tipo_pessoa deve estar na posição 5
+            stmt.setString(5, conta.getSenha()); // senha deve estar na posição 4
+            logger.info("Inserindo na tabela T_PESSOA_FISICA...");
             stmt.executeUpdate();
+            logger.info("Inserção em T_PESSOA_FISICA bem-sucedida.");
+            // Verifica o tipo da conta e insere na tabela correta (T_PESSOA_FISICA ou T_PESSOA_JURIDICA)
+            // Inserção na tabela T_PESSOA_FISICA
+            if (conta.getTipoConta().equals(TipoConta.F)) {
+                try (PreparedStatement stmtFisica = conexao.prepareStatement(SQL_INSERT_FISICA)) {
+                    ContaFisica contaFisica = (ContaFisica) conta;
+                    stmtFisica.setString(1, contaFisica.getCpf());
+                    stmtFisica.setString(2, contaFisica.getRg());
+                    stmtFisica.setDate(3, java.sql.Date.valueOf(contaFisica.getDataNascimento()));
+                    stmtFisica.executeUpdate();
+                    logger.info("Inserção em T_PESSOA_FISICA bem-sucedida.");
+                }
+            }
+
+// Inserção na tabela T_PESSOA_JURIDICA
+            else if (conta.getTipoConta().equals(TipoConta.J)) {
+                try (PreparedStatement stmtJuridica = conexao.prepareStatement(SQL_INSERT_JURIDICA)) {
+                    ContaJuridica contaJuridica = (ContaJuridica) conta;
+                    stmtJuridica.setString(1, contaJuridica.getCnpj());
+                    stmtJuridica.setString(2, contaJuridica.getRazaoSocial());
+                    stmtJuridica.setString(3, contaJuridica.getNomeFantasia());
+                    stmtJuridica.setString(4, contaJuridica.getInscricaoEstadual());
+                    stmtJuridica.executeUpdate();
+                    logger.info("Inserção em T_PESSOA_JURIDICA bem-sucedida.");
+
+
+
+        }
+            } else {
+                throw new IllegalArgumentException("Tipo de conta inválido");
+            }
+
+
+
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir a Conta", e);
         }
@@ -189,32 +226,32 @@ public class ImplementContaDAO implements ContaDAO {
 //
 //
 //
-//    private Conta construirConta(ResultSet rs) throws SQLException {
-//        TipoConta tipoConta = TipoConta.valueOf(rs.getString("tipoConta"));
-//        if (tipoConta == TipoConta.F) {
-//            return new ContaFisica(
-//                    rs.getInt("id"),
-//                    rs.getString("nome"),
-//                    rs.getString("email"),
-//                    rs.getString("numeroTelefone"),
-//                    rs.getString("senha"),
-//                    rs.getDate("dataNascimento").toLocalDate(),
-//                    rs.getString("cpf"),
-//                    rs.getString("rg")
-//            );
-//        } else if (tipoConta == TipoConta.J) {
-//            return new ContaJuridica(
-//                    rs.getInt("id"),
-//                    rs.getString("nome"),
-//                    rs.getString("email"),
-//                    rs.getString("numeroTelefone"),
-//                    rs.getString("senha"),
-//                    rs.getString("cnpj"),
-//                    rs.getString("razaoSocial"),
-//                    rs.getString("nomeFantasia"),
-//                    rs.getString("inscricaoEstadual")
-//            );
-//        }
-//        return null;
-//    }
+    private Conta construirConta(ResultSet rs) throws SQLException {
+        TipoConta tipoConta = TipoConta.valueOf(rs.getString("tipoConta"));
+        if (tipoConta == TipoConta.F) {
+            return new ContaFisica(
+                    rs.getInt("id"),
+                    rs.getString("nome"),
+                    rs.getString("email"),
+                    rs.getString("numeroTelefone"),
+                    rs.getString("senha"),
+                    rs.getDate("dataNascimento").toLocalDate(),
+                    rs.getString("cpf"),
+                    rs.getString("rg")
+            );
+        } else if (tipoConta == TipoConta.J) {
+            return new ContaJuridica(
+                    rs.getInt("id"),
+                    rs.getString("nome"),
+                    rs.getString("email"),
+                    rs.getString("numeroTelefone"),
+                    rs.getString("senha"),
+                    rs.getString("cnpj"),
+                    rs.getString("razaoSocial"),
+                    rs.getString("nomeFantasia"),
+                    rs.getString("inscricaoEstadual")
+            );
+        }
+        return null;
+    }
 }
