@@ -4,13 +4,9 @@ package br.com.fiap.fintech.test;
 import br.com.fiap.fintech.controller.ContaController;
 import br.com.fiap.fintech.factory.ConnectionFactory;
 import br.com.fiap.fintech.interfaceDAO.ContaDAO;
-import br.com.fiap.fintech.model.Conta;
 import br.com.fiap.fintech.model.ContaFisica;
-import br.com.fiap.fintech.model.ContaJuridica;
 import br.com.fiap.fintech.repository.ContaRepository;
 import br.com.fiap.fintech.service.ContaService;
-import br.com.fiap.fintech.implementsDAO.ImplementContaDAO;
-import br.com.fiap.fintech.tipoenum.TipoConta;
 
 import java.sql.Connection;
 import java.sql.SQLException;
