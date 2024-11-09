@@ -1,22 +1,31 @@
 package br.com.fiap.fintech.implementsDAO;
 
-
 import br.com.fiap.fintech.exceptions.DatabaseConnectionException;
+import br.com.fiap.fintech.exceptions.IdentificadorInvalidoException;
 import br.com.fiap.fintech.factory.ConnectionFactory;
-import br.com.fiap.fintech.interfaceDAO.DividaDAO;
-import br.com.fiap.fintech.model.Divida;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import br.com.fiap.fintech.interfaceDAO.ContaDAO;
+import br.com.fiap.fintech.model.Conta;
+import br.com.fiap.fintech.model.ContaFisica;
+import br.com.fiap.fintech.model.ContaJuridica;
+import br.com.fiap.fintech.tipoenum.TipoConta;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class ImplementDividaDAO implements DividaDAO {
+public class ImplementContaDAO implements ContaDAO {
+    private static final Logger logger = Logger.getLogger(ImplementContaDAO.class.getName());
+
+    private static final String SQL_INSERT_USUARIO = "INSERT INTO T_USUARIO (nm_usuario, email, nm_telefone, senha, tipo_pessoa) VALUES (?, ?, ?, ?, ?)";
+    private static final String SQL_INSERT_FISICA = "INSERT INTO T_PESSOA_FISICA (id_usuario, nr_cpf, nr_rg, dt_nascimento) VALUES (?, ?, ?, ?)";
+    private static final String SQL_INSERT_JURIDICA = "INSERT INTO T_PESSOA_JURIDICA (id_usuario, cnpj, razaoSocial, nomeFantasia, inscricaoEstadual) VALUES (?, ?, ?, ?, ?)";
+    private static final String SQL_SELECT_BY_ID = "SELECT * FROM T_USUARIO WHERE id = ?";
 
     private final Connection conexao;
 
-    public ImplementDividaDAO() {
+    public ImplementContaDAO() {
         try {
             this.conexao = ConnectionFactory.getConnection();
         } catch (DatabaseConnectionException e) {
@@ -25,106 +34,88 @@ public class ImplementDividaDAO implements DividaDAO {
     }
 
     @Override
-    public void insert(Divida divida) {
-        String sql = "INSERT INTO T_Divida (id_divida, valor_total, valor_pago, data_vencimento, status, tipo, descricao, data_criacao) " +
-                "VALUES (RM558943.SEQ_DIVIDA.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
-            stmt.setDouble(1, divida.getValorTotal());
-            stmt.setDouble(2, divida.getValorPago());
-            stmt.setDate(3, java.sql.Date.valueOf(divida.getDataVencimento()));
-            stmt.setString(4, divida.getStatusDivida());
-            stmt.setString(5, divida.getTipoDivida());
-            stmt.setString(6, divida.getDescricaoDivida());
-            stmt.setDate(7, java.sql.Date.valueOf(divida.getDataCriacao()));
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao inserir a dívida", e);
-        }
-    }
-
-    @Override
-    public List<Divida> getAll() {
-        List<Divida> dividas = new ArrayList<>();
-        String sql = "SELECT * FROM T_Divida";
-
-        try (PreparedStatement stmt = conexao.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                Divida divida = new Divida();
-                divida.setIdDivida(rs.getInt("id_divida"));
-                divida.setValorTotal(rs.getDouble("valor_total"));
-                divida.setValorPago(rs.getDouble("valor_pago"));
-                divida.setDataVencimento(rs.getDate("data_vencimento").toLocalDate());
-                divida.setStatusDivida(rs.getString("status"));
-                divida.setTipoDivida(rs.getString("tipo"));
-                divida.setDescricaoDivida(rs.getString("descricao"));
-                divida.setDataVencimento(rs.getDate("data_criacao").toLocalDate());
-                dividas.add(divida);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar as dívidas", e);
+    public void cadastrar(Conta conta) throws SQLException {
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta não pode ser nula");
         }
 
-        return dividas;
-    }
+        try (PreparedStatement stmtUsuario = conexao.prepareStatement(SQL_INSERT_USUARIO, Statement.RETURN_GENERATED_KEYS)) {
+            // Inserção na tabela T_USUARIO
+            preencherDadosConta(stmtUsuario, conta);
+            stmtUsuario.executeUpdate();
 
-    @Override
-    public void update(Divida divida) {
-        String sql = "UPDATE T_Divida SET valor_total = ?, valor_pago = ?, data_vencimento = ?, status = ?, tipo = ?, descricao = ?, data_criacao = ? WHERE id_divida = ?";
+            try (ResultSet generatedKeys = stmtUsuario.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int idUsuario = generatedKeys.getInt(1);
 
-        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
-            stmt.setDouble(1, divida.getValorTotal());
-            stmt.setDouble(2, divida.getValorPago());
-            stmt.setDate(3, java.sql.Date.valueOf(divida.getDataVencimento()));
-            stmt.setString(4, divida.getStatusDivida());
-            stmt.setString(5, divida.getTipoDivida());
-            stmt.setString(6, divida.getDescricaoDivida());
-            stmt.setDate(7, java.sql.Date.valueOf(divida.getDataCriacao()));
-            stmt.setInt(8, divida.getIdDivida());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar a dívida", e);
-        }
-    }
-
-    @Override
-    public void delete(int idDivida) {
-        String sql = "DELETE FROM T_Divida WHERE id_divida = ?";
-
-        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
-            stmt.setInt(1, idDivida);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao remover a dívida", e);
-        }
-    }
-
-    @Override
-    public Divida getById(int idDivida) {
-        String sql = "SELECT * FROM T_Divida WHERE id_divida = ?";
-        Divida divida = null;
-
-        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
-            stmt.setInt(1, idDivida);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    divida = new Divida();
-                    divida.setIdDivida(rs.getInt("id_divida"));
-                    divida.setValorTotal(rs.getDouble("valor_total"));
-                    divida.setValorPago(rs.getDouble("valor_pago"));
-                    divida.setDataVencimento(rs.getDate("data_vencimento").toLocalDate());
-                    divida.setStatusDivida(rs.getString("status"));
-                    divida.setTipoDivida(rs.getString("tipo"));
-                    divida.setDescricaoDivida(rs.getString("descricao"));
-                    divida.setDataCriacao(rs.getDate("data_criacao").toLocalDate());
+                    if (conta instanceof ContaFisica) {
+                        try (PreparedStatement stmtFisica = conexao.prepareStatement(SQL_INSERT_FISICA)) {
+                            ContaFisica contaFisica = (ContaFisica) conta;
+                            stmtFisica.setInt(1, idUsuario);
+                            stmtFisica.setString(2, contaFisica.getCpf());
+                            stmtFisica.setString(3, contaFisica.getRg());
+                            stmtFisica.setDate(4, java.sql.Date.valueOf(contaFisica.getDataNascimento()));
+                            stmtFisica.executeUpdate();
+                            logger.info("Conta Física inserida com sucesso.");
+                        }
+                    } else if (conta instanceof ContaJuridica) {
+                        try (PreparedStatement stmtJuridica = conexao.prepareStatement(SQL_INSERT_JURIDICA)) {
+                            ContaJuridica contaJuridica = (ContaJuridica) conta;
+                            stmtJuridica.setInt(1, idUsuario);
+                            stmtJuridica.setString(2, contaJuridica.getCnpj());
+                            stmtJuridica.setString(3, contaJuridica.getRazaoSocial());
+                            stmtJuridica.setString(4, contaJuridica.getNomeFantasia());
+                            stmtJuridica.setString(5, contaJuridica.getInscricaoEstadual());
+                            stmtJuridica.executeUpdate();
+                            logger.info("Conta Jurídica inserida com sucesso.");
+                        }
+                    }
+                } else {
+                    throw new SQLException("Falha ao obter ID gerado para a conta.");
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar a dívida pelo ID", e);
+            logger.log(Level.SEVERE, "Erro ao inserir a Conta", e);
+            throw e;
         }
-
-        return divida;
     }
-}
 
+    private void preencherDadosConta(PreparedStatement stmt, Conta conta) throws SQLException {
+        stmt.setString(1, conta.getNome());
+        stmt.setString(2, conta.getEmail());
+        stmt.setString(3, conta.getNumeroTelefone());
+        stmt.setString(4, conta.getSenha());
+        stmt.setString(5, conta.getTipoConta().name());
+    }
+
+    private Conta construirConta(ResultSet rs) throws SQLException {
+        TipoConta tipoConta = TipoConta.valueOf(rs.getString("tipo_pessoa"));
+        if (tipoConta == TipoConta.FISICA) {
+            return new ContaFisica(
+                    rs.getInt("id"),
+                    rs.getString("nm_usuario"),
+                    rs.getString("email"),
+                    rs.getString("nm_telefone"),
+                    rs.getString("senha"),
+                    rs.getDate("dt_nascimento").toLocalDate(),
+                    rs.getString("nr_cpf"),
+                    rs.getString("nr_rg")
+            );
+        } else if (tipoConta == TipoConta.JURIDICA) {
+            return new ContaJuridica(
+                    rs.getInt("id"),
+                    rs.getString("nm_usuario"),
+                    rs.getString("email"),
+                    rs.getString("nm_telefone"),
+                    rs.getString("senha"),
+                    rs.getString("cnpj"),
+                    rs.getString("razaoSocial"),
+                    rs.getString("nomeFantasia"),
+                    rs.getString("inscricaoEstadual")
+            );
+        }
+        return null;
+    }
+
+    // Outros métodos (atualizar, deletar, buscarPorId, etc.) implementados conforme necessário...
+}
