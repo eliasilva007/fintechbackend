@@ -1,11 +1,11 @@
 package br.com.fiap.fintech.model;
 import br.com.fiap.fintech.tipoenum.TipoConta;
 
-public abstract class Conta {
+public class Conta {
 
     //Atributos
 
-    protected int id;
+    protected Integer id;
     protected String nome;
     protected String email;
     protected String numeroTelefone;
@@ -68,7 +68,18 @@ public abstract class Conta {
 
     }
 
-    //Construtor Personalizado
+    @Override
+    public String toString() {
+        return "Conta{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                ", numeroTelefone='" + numeroTelefone + '\'' +
+                ", senha='" + senha + '\'' +
+                ", tipoConta=" + tipoConta +
+                '}';
+    }
+//Construtor Personalizado
 
     public Conta(int id, String nome, String email, String numeroTelefone, String senha, TipoConta tipoConta){
         this.id = id;

@@ -1,8 +1,8 @@
 package br.com.fiap.fintech.tipoenum;
 
 public enum TipoConta {
-    FISICA("F"),  // "F" para pessoa física
-    JURIDICA("J");  // "J" para pessoa jurídica
+    F("FISICA"),  // "F" para pessoa física
+    J("JURIDICA");  // "J" para pessoa jurídica
 
     private final String codigo;
 

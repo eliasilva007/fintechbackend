@@ -1,7 +1,9 @@
 package br.com.fiap.fintech.controller;
 
+import br.com.fiap.fintech.exceptions.AppException;
 import br.com.fiap.fintech.exceptions.ContaNaoEncontradaException;
 import br.com.fiap.fintech.model.Conta;
+import br.com.fiap.fintech.model.Divida;
 import br.com.fiap.fintech.service.ContaService;
 
 import java.sql.Connection;
@@ -17,7 +19,7 @@ public class ContaController {
     }
 
     // Cadastrar uma nova conta
-    public void cadastrarConta(Connection connection, Conta conta) {
+    public void cadastrarConta(Conta conta) {
         try {
             contaService.cadastrarConta(conta);
             System.out.println("Conta cadastrada com sucesso!");
@@ -37,46 +39,51 @@ public class ContaController {
 //    }
 //
 //    // Buscar uma conta por ID
-//    public Conta buscarContaPorId(int id) {
-//        try {
-//            return contaService.buscarContaPorId(id);
-//        } catch (ContaNaoEncontradaException e) {
-//            System.err.println("Erro: " + e.getMessage());
-//        } catch (SQLException e) {
-//            System.err.println("Erro ao buscar conta: " + e.getMessage());
-//        }
-//        return null;
-//    }
+    public Conta buscarContaPorId (int id) {
+        try {
+            Conta conta = contaService.buscarContaPorId(id);
+            if (conta != null) {
+                System.out.println("Dívida encontrada: " + conta);
+            } else {
+                System.out.println("Dívida não encontrada com ID: " + id);
+            }
+            return conta;
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar dívida mano: " + e.getMessage());
+            return null;
+        }
+
+    }
 //
 //    // Listar todas as contas
-//    public List<Conta> listarTodasContas() {
-//        try {
-//            return contaService.listarTodasContas();
-//        } catch (SQLException e) {
-//            System.err.println("Erro ao listar contas: " + e.getMessage());
-//        }
-//        return null;
-//    }
+    public List<Conta> listarTodasContas() {
+        try {
+            return contaService.listarTodasContas();
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar contas: " + e.getMessage());
+        }
+        return null;
+    }
 //
 //    // Deletar uma conta pelo ID
-//    public void deletarConta(int id) {
-//        try {
-//            contaService.deletarConta(id);
-//            System.out.println("Conta deletada com sucesso!");
-//        } catch (ContaNaoEncontradaException e) {
-//            System.err.println("Erro: " + e.getMessage());
-//        } catch (SQLException e) {
-//            System.err.println("Erro ao deletar conta: " + e.getMessage());
-//        }
-//    }
+    public void deletarConta(int id) {
+        try {
+            contaService.deletarConta(id);
+            System.out.println("Conta deletada com sucesso!");
+        } catch (ContaNaoEncontradaException e) {
+            System.err.println("Erro: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Erro ao deletar conta: " + e.getMessage());
+        }
+    }
 //
 //    // Realizar login na conta
-//    public Conta login(String identificador, String senha) {
-//        try {
-//            return contaService.login(identificador, senha);
-//        } catch (Exception e) {
-//            System.err.println("Erro ao fazer login: " + e.getMessage());
-//        }
-//        return null;
-//    }
+    public Conta login(String identificador, String senha) {
+        try {
+            return contaService.login(identificador, senha);
+        } catch (Exception e) {
+            System.err.println("Erro ao fazer login: " + e.getMessage());
+        }
+        return null;
+    }
 }
