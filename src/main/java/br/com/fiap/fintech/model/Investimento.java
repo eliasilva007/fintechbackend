@@ -4,23 +4,41 @@ import java.time.LocalDate;
 
 public class Investimento {
 
-    //Atributos
-
-    private String descricaoInvestimento;
+    // Atributos
+    private int idInvestimento; // Identificador único do investimento
+    private String tipo;
     private double valorInvestimento;
     private double taxaRetornoInvestimento;
     private LocalDate dataInicio;
     private LocalDate dataFim;
-    private Conta conta;
 
-    //Getters e Setters
+    // Construtor Padrão
+    public Investimento() {}
 
-    public String getDescricaoInvestimento() {
-        return descricaoInvestimento;
+    // Construtor Personalizado
+    public Investimento(String tipo, double valorInvestimento, double taxaRetornoInvestimento, LocalDate dataInicio, LocalDate dataFim) {
+        this.tipo = tipo;
+        this.valorInvestimento = valorInvestimento;
+        this.taxaRetornoInvestimento = taxaRetornoInvestimento;
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
     }
 
-    public void setDescricaoInvestimento(String descricaoInvestimento) {
-        this.descricaoInvestimento = descricaoInvestimento;
+    // Getters e Setters
+    public int getIdInvestimento() {
+        return idInvestimento;
+    }
+
+    public void setIdInvestimento(int idInvestimento) {
+        this.idInvestimento = idInvestimento;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public double getValorInvestimento() {
@@ -55,34 +73,4 @@ public class Investimento {
         this.dataFim = dataFim;
     }
 
-    public Conta getConta() {
-        return conta;
-    }
-
-    public void setConta(Conta conta) {
-        this.conta = conta;
-    }
-
-    //Contrutor Padrão
-    public Investimento() {
-    }
-
-    //Construtor Personalizado
-    public Investimento(String descricaoInvestimento, double valorInvestimento, double taxaRetornoInvestimento, LocalDate dataInicio, LocalDate dataFim, Conta conta) {
-        this.descricaoInvestimento = descricaoInvestimento;
-        this.valorInvestimento = valorInvestimento;
-        this.taxaRetornoInvestimento = taxaRetornoInvestimento;
-        this.dataInicio = dataInicio;
-        this.dataFim = dataFim;
-        this.conta = conta;
-    }
-
-    //Método da classe
-
-    public void fazerInvestimento(){
-        //Logica para realizar investimento
-
-
-        System.out.println("Investimento Realizado com Sucesso: " + descricaoInvestimento);
-    }
 }
